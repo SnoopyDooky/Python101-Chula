@@ -1,0 +1,552 @@
+Chapter 1: Data Type, Variable and Expression
+
+1:
+
+C = float(input())
+F = 9 * C / 5 + 32
+K = C + 273.15
+print(F, K)
+
+2:
+
+import math
+a = float(input())
+b = float(input())
+C = float(input())
+c = math.sqrt(a**2 + b**2 - 2*a*b*math.cos(math.radians(C)))
+print("c =", c, "cm.")
+
+3:
+
+isbn = input()
+n1, n2, n3, n4, n5, n6, n7, n8, n9 = [int(e) for e in isbn]
+s = 10*n1 + 9*n2 + 8*n3 + 7*n4 + 6*n5 + 5*n6 + 4*n7 + 3*n8 + 2*n9
+# (s + n10) % 11 == 0
+# s + n10 = 11k, k is integer
+# therefore: k = s//11 + 1
+# and n10 = 11k - s = 11(s//11 + 1) - s
+n10 = 11 * (s//11 + 1) - s
+print(isbn + str(n10))
+
+Chapter 2: Selection ( if-elif-else )
+
+1:
+
+month, year = [int(e) for e in input().split()]
+year -= 543  # C.E.
+if month == 2:  # February
+    if (year % 4 == 0 and year % 100 != 0) or (year % 400 == 0):
+        print(29)
+    else:
+        print(28)
+elif month in [4, 6, 9, 11]:  # April, June, September, November
+    print(30)
+else:
+    print(31)
+
+2:
+
+score = float(input())
+if 80 <= score <= 100:
+    print("A")
+elif 75 <= score < 80:
+    print("B+")
+elif 70 <= score < 75:
+    print("B")
+elif 65 <= score < 70:
+    print("C+")
+elif 60 <= score < 65:
+    print("C")
+elif 55 <= score < 60:
+    print("D+")
+elif 50 <= score < 55:
+    print("D")
+elif 0 <= score < 50:
+    print("F")
+else:
+    print("ERROR")
+
+3:
+
+h_in = int(input())
+m_in = int(input())
+h_out = int(input())
+m_out = int(input())
+fee = 0  # less than 15 m
+interval_time = h_out*60*60 + m_out*60 - (h_in*60*60 + m_in*60)  # in second
+interval_time_ceil = -(-interval_time // 3600)  # ceil interval_time (h) without math module
+if 15*60 < interval_time <= 3*60*60:  # 15 m - 3 h
+    fee = 10 * interval_time_ceil
+elif 3*60*60 < interval_time <= 6*60*60:  # 3 h - 6 h
+    fee = 30 + 20 * (interval_time_ceil - 3)
+elif interval_time > 6*60*60:  # more than 6 h
+    fee = 200
+print(fee)
+
+Chapter 3: Repetition ( while, for )
+
+1:
+
+x = int(input())
+total = 0
+for i in range(x):
+    if i % 3 == 0 or i % 5 == 0:
+        total += i
+print(total)
+
+2:
+
+x = float(input())
+total = 0; n = 0
+while x != -1:
+    total += x
+    n += 1
+    x = float(input())
+if n == 0:
+    print("No Data")
+else:
+    print(total / n)
+
+3:
+
+l = int(input())  # perimeter
+max_c = -1
+# a+b+c = l and 0 < a < b < c < l
+# Thus: b < c => b < l-a-b => b < l-a
+for a in range(1, l-1):  # 1 <= a <= l-2
+    for b in range(a+1, l-a):  # a < b < l-a
+        c = l - a - b
+        if c**2 == a**2 + b**2 and c > max_c:
+            max_c = c
+print(max_c)
+
+Chapter 4: String
+
+1:
+
+date = input()  # (mm/dd/yyyy)
+months = "JANFEBMARAPRMAYJUNJULAUGSEPOCTNOVDEC"
+d = date[3:5]
+m = months[3*int(date[:2])-3: 3*int(date[:2])]
+y = date[6:]
+print(d, m, y)
+
+2:
+
+s = input()
+c = 0   # counts
+for e in s:
+    if "A" <= e <= "Z":
+        c += 1
+print(c)
+
+3:
+
+s = input() + " "
+group = 0
+for i in range(len(s)-1):
+    if s[i] in "aeiou" and s[i+1] not in "aeiou":
+        group += 1
+print(group)
+
+Chapter 5: File
+
+1:
+
+f = open("data.txt", "r")
+section = input()
+Sum = 0; n = 0
+for line in f:  # id:name:section:score
+    line = line.strip()
+    # find index of first, second, and third colon
+    i_first = line.find(":")
+    i_second = line.find(":", i_first+1)
+    i_third = line.find(":", i_second+1)
+    sec = line[i_second+1:i_third]
+    if section == sec:
+        score = float(line[i_third+1:])
+        n += 1
+        Sum += score
+f.close()
+if n > 0:
+    print(Sum / n)  # average score
+else:
+    print("Not Found")
+
+2:
+
+fin = open("score.txt", "r")
+sid = input().strip()
+for line in fin:
+    student_id, grade = line.strip().split()
+    if sid == student_id:
+        print(grade)
+        break
+else:
+    print("Not Found")
+fin.close()
+
+3:
+
+filename = input()
+# [[number of first char, first char], ...]  ex. [[0, 'a'], [0, 'b'], [0, 'f']]
+count = [[0, input()] for i in range(3)]  # 3 inputs
+fin = open(filename, "r")
+for line in fin:
+    for e in line.strip():
+        for i in range(3):
+            if e == count[i][1]:
+                count[i][0] += 1
+fin.close()
+count.sort(reverse=True)    # ex. [[4, 'a'], [3, 'f'], [1, 'b']]
+print(count[0][1] + count[1][1] + count[2][1])
+
+Chapter 6: List
+
+1:
+
+d = []
+t = int(input())
+while t >= 0:   # append t >= 0
+    d.append(t)
+    t = int(input())
+d.append(t)   # append t < 0
+for e in d[:-1]:
+    print(e + d[-1])
+
+2:
+
+d = []  # [[-score, id], ...]
+t = input().split()
+while len(t) > 1:
+    d.append([-float(t[1]), int(t[0])])
+    t = input().split()
+student_id = int(t[0])  # student ID that needs to find rank
+d.sort()
+for i in range(len(d)):
+    if student_id == d[i][1]:   # found student ID
+        print(i + 1)    # rank
+        break
+else:
+    print("Not Found")
+
+3:
+
+d = []  # list of integer
+t = int(input())
+while t != -1:
+    d.append(t)
+    t = int(input())
+for e in d:
+    if d.count(e) > len(d)/2:
+        print(e)
+        break
+else:
+    print("Not Found")
+
+Chapter 7: Tuple, Dictionary and Set
+
+1:
+
+n = int(input())
+s = set([int(e) for e in input().split()])
+s_union = set(s)
+s_intersect = set(s)
+for _ in range(n-1):
+    t = set([int(e) for e in input().split()])
+    s_union = s_union | t
+    s_intersect = s_intersect & t
+print(len(s_union))
+print(len(s_intersect))
+
+2:
+
+n = int(input())
+words = {}  # ex. {'good': 'Adjective', 'goose': 'Noun', ...}
+first_two_words = {}  # ex. {'go': ['good', 'goose'], 'wr': ['wrap,' 'write', ...], ...}
+# add data to words and first_two_words
+for i in range(n):
+    parts_of_speech, word = input().split()
+    words[word] = parts_of_speech
+    if word[:2] in first_two_words:
+        first_two_words[word[:2]].append(word)
+    else:
+        first_two_words[word[:2]] = [word]
+# sort
+l = [(-len(v), k) for k, v in first_two_words.items()]
+l.sort()
+# show results
+print(l[0][1])   # ex. 'wr'
+print(-l[0][0])  # ex. 5
+for e in first_two_words[l[0][1]]:
+    print(e, words[e])
+
+3:
+
+d = {}  # ex. {subject_id: set of student_id, ...}
+t = input().split()
+# add data to d
+while int(t[0]) != -1:
+    student_id = t[0]
+    subject_id = set(t[1:])
+    for e in subject_id:
+        if e in d:
+            d[e].add(student_id)
+        else:
+            d[e] = {student_id}
+    t = input().split()
+subject_id_input = input().split()
+for e in subject_id_input:  # create empty set if subject_id_input not in dictionary
+    if e not in d:
+        d[e] = set()
+student_in_subject_id1 = d[subject_id_input[0]]
+student_in_subject_id2 = d[subject_id_input[1]]
+a = len(student_in_subject_id1 & student_in_subject_id2)    # intersect
+b = len((student_in_subject_id1 | student_in_subject_id2) - (student_in_subject_id1 & student_in_subject_id2))  # union - intersect
+c = len(student_in_subject_id1 | student_in_subject_id2)    # union
+print(a, b, c)
+
+Chapter 8: Function and Recursion
+
+1:
+
+def make_int_list(x):
+    return [int(e) for e in x.split()]
+
+
+def is_odd(e):
+    return e % 2 == 1
+
+
+def odd_list(alist):
+    return [e for e in alist if is_odd(e)]
+
+
+def sum_square(alist):
+    total = 0
+    for e in alist:
+        total += e**2
+    return total
+
+
+exec(input().strip())
+
+2:
+
+def c(n, k):
+    if 0 < k < n: return c(n-1, k) + c(n-1, k-1)
+    if k == 0 or n == k: return 1
+    return 0
+
+
+n = int(input())
+k = int(input())
+print(c(n, k))
+
+3:
+
+def sumlist(x):
+    sum_of_integer = 0
+    for e in x:
+        if type(e) == list:
+            sum_of_integer += sumlist(e)
+        else:
+            sum_of_integer += e
+    return sum_of_integer
+
+
+print(eval(input().strip()))
+
+Chapter 9: NumPy
+
+1:
+
+import numpy as np
+
+x = [int(e) for e in input().split()]
+rentalrates = np.array(x)
+sales = np.ndarray((4, 5), int)
+for k in range(4):
+    sales[k] = [int(e) for e in input().split()]
+totalsales = np.sum(sales, axis=0)
+d = np.argmax(totalsales)
+days = ('Mon', 'Tue', 'Wed', 'Thu', 'Fri')
+print(days[d], totalsales[d])
+salesvalues = rentalrates.dot(sales)
+for e in salesvalues:
+    print(e, end=" ")
+
+2:
+
+import numpy as np
+
+
+def read_height_weight():
+    list_hw = []
+    for k in range(int(input())):
+        h, w = input().split()
+        list_hw.append((int(h), int(w)))
+    return np.array(list_hw)
+
+
+def cm_to_m(x):
+    return x / 100
+
+
+def cal_bmi(hw):
+    h = cm_to_m(hw[:, 0])
+    w = hw[:, 1]
+    return w / h**2
+
+
+def main():
+    hw = read_height_weight()
+    bmi = cal_bmi(hw)
+    avg_bmi = np.mean(bmi)
+    count_underweight = sum(bmi < 18.5)
+    print('average bmi =', avg_bmi)
+    print('#bmi < 18.5 =', count_underweight)
+
+
+exec(input().strip())
+
+3:
+
+import numpy as np
+
+
+def fib(n, k):  # Fn (mod k)
+    I = np.identity(2, int)
+    A = np.array([[0, 1], [1, 1]])
+
+    def a(n):    # A^n (mod k) = (A (mod k))^n
+        if n == 0: return I
+        B = a(n // 2)   # recursion
+        if n % 2 == 0: return B.dot(B) % k
+        return A.dot(B.dot(B)) % k
+    
+    return a(n)[0, 1]
+
+
+n, k = [int(e) for e in input().split()]
+print(fib(n, k))
+
+Chapter 10: Class
+
+1:
+
+def gcd(x, y):
+    if x % y == 0: return y
+    return gcd(y, x % y)
+
+
+class Fraction:
+    def __init__(self, a, b):
+        self.numerator = a
+        self.denominator = b
+
+    def __str__(self):
+        return str(self.numerator) + "/" + str(self.denominator)
+
+    def simplify(self):
+        g = gcd(self.numerator, self.denominator)
+        return Fraction(self.numerator // g, self.denominator // g)
+
+    def add(self, other):
+        ans_numer = self.numerator * other.denominator + self.denominator * other.numerator
+        ans_denom = self.denominator * other.denominator
+        return Fraction(ans_numer, ans_denom).simplify()
+
+    def multiply(self, other):
+        ans_numer = self.numerator * other.numerator
+        ans_denom = self.denominator * other.denominator
+        return Fraction(ans_numer, ans_denom).simplify()
+
+
+a, b, c, d = [int(e) for e in input().split()]
+fraction1 = Fraction(a, b)
+fraction2 = Fraction(c, d)
+print(fraction1.add(fraction2))
+print(Fraction.multiply(fraction1, fraction2))
+
+2:
+
+class Card:
+    def __init__(self, value, suit):
+        self.value = value
+        self.suit = suit
+
+    def __str__(self):
+        return f"({self.value} {self.suit})"
+
+    def getScore(self):
+        if self.value == "A":
+            return 1
+        elif self.value in ["J", "Q", "K"]:
+            return 10
+        return int(self.value)
+
+    def sum(self, other):
+        return (self.getScore() + other.getScore()) % 10
+
+    def __lt__(self, rhs):
+        v = ["3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A", "2"]
+        s = ["club", "diamond", "heart", "spade"]
+        if self.value != rhs.value:
+            return v.index(self.value) < v.index(rhs.value)
+        return s.index(self.suit) < s.index(rhs.suit)
+
+
+n = int(input())
+cards = []
+for i in range(n):
+    value, suit = input().split()
+    cards.append(Card(value, suit))
+for i in range(n):
+    print(cards[i].getScore())
+print("----------")
+for i in range(n-1):
+    print(Card.sum(cards[i], cards[i+1]))
+print("----------")
+cards.sort()
+for i in range(n):
+    print(cards[i])
+
+3:
+
+class piggybank:
+    def __init__(self):
+        self.coin = {}
+
+    def add(self, v, n):
+        if sum(self.coin.values()) + n > 100:
+            return False
+        v = float(v)
+        if v not in self.coin:
+            self.coin[v] = 0
+        self.coin[v] += n
+        return True
+
+    def __float__(self):
+        s = 0
+        for k, v in self.coin.items():
+            s += (k * v)
+        return float(s)
+
+    def __str__(self):
+        l = []
+        for k in sorted(self.coin):
+            l.append(str(k) + ":" + str(self.coin[k]))
+        return "{" + ", ".join(l) + "}"
+
+
+cmd1 = input().split(';')
+cmd2 = input().split(';')
+p1 = piggybank(); p2 = piggybank()
+for c in cmd1: eval(c)
+for c in cmd2: eval(c)
+
+
+
+
+
